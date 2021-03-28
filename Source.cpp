@@ -11,15 +11,14 @@ map<string, GLfloat> Eye = {
 	{"lookAtX", 0.0f}, {"lookAtY", 0.0f}, {"lookAtZ", 0.0f},
 	{"upX", 0.0f}, {"upY", 1.0f}, {"upZ", 0.0f}
 };
-
-// Cube's edge length also boundaries of Eye's positions
-GLfloat edgeLength = 10.0f;
+bool EyeFollowParticle = false; 
 
 // Create a sphere
-// Its id is always 1
 Particle ps = Particle(make_tuple(2.5f, 2.5f, 2.5f),
-						make_tuple(224, 17, 95), 0.1f, 1);
+	make_tuple(224, 17, 95), 0.1f, 1);
 
+// Cube's edge length, boundaries of Eye's positions
+GLfloat edgeLength = 10.0f;
 GLfloat lowerBoundary = 0.1f;
 GLfloat upperBoundary = edgeLength - lowerBoundary;
 
@@ -99,11 +98,13 @@ void renderScene() {
 
 	limitEyePosition();
 
-	// This will make the eye follow the sphere
-	Eye["lookAtX"] = get<0>(ps.getPosition());
-	Eye["lookAtY"] = get<1>(ps.getPosition());
-	Eye["lookAtZ"] = get<2>(ps.getPosition());
-
+	if (EyeFollowParticle) {
+		// This will make the eye follow the sphere
+		Eye["lookAtX"] = get<0>(ps.getPosition());
+		Eye["lookAtY"] = get<1>(ps.getPosition());
+		Eye["lookAtZ"] = get<2>(ps.getPosition());
+	}
+	
 	gluLookAt(Eye["posX"], Eye["posY"], Eye["posZ"],
 		Eye["lookAtX"], Eye["lookAtY"], Eye["lookAtZ"],
 		Eye["upX"], Eye["upY"], Eye["upZ"]);
@@ -123,6 +124,15 @@ void keyboard(unsigned char key, int x_mouse_pos, int y_mouse_pos) {
 	{
 	case 27: // ESC key
 		exit(0);
+		break;
+	case 102: // f key
+		EyeFollowParticle = !EyeFollowParticle;
+		if (!EyeFollowParticle) {
+			// This will make the eye look at 0, 0, 0 corner
+			Eye["lookAtX"] = 0.0f;
+			Eye["lookAtY"] = 0.0f;
+			Eye["lookAtZ"] = 0.0f;
+		}
 		break;
 	default:
 		break;
