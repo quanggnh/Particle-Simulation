@@ -168,6 +168,10 @@ int main(int argc, char **argv) {
 	glutKeyboardFunc(keyboard);
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);
+
+	// Load texture
+	ps.loadCustomBmp("metal.bmp");
 
 	glutMainLoop();
 	return 0;
